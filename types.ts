@@ -1,6 +1,6 @@
 export interface Product {
   fabricante?: number;
-  produto?: string;
+  produto: string;
   oferta_codigo?: number;
   ordem_listagem?: number;
   quantidade?: number;

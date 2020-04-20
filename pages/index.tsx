@@ -22,7 +22,11 @@ interface ProductEnhanced extends Product {
   json: string
 }
 
-const fetchProducts = (url: string) => axios.get(url).then(res => res.data.map((p: Product) => ({ ...p, json: JSON.stringify(p) })))
+const fetchProducts = (url: string) => axios.get(url).then(res => {
+    const enhanced: ProductEnhanced[] = res.data.map((p: Product) => ({ ...p, json: JSON.stringify(p) } as ProductEnhanced));
+    // @ts-ignore
+    return [...enhanced].sort((a,b) => ( a.desconto < b.desconto ))
+} )
 
 const filterProducts = mem((products: ProductEnhanced[], filter: string) => {
   return products.filter(p => p.json.includes(filter))
@@ -37,7 +41,7 @@ const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
   const products = data as ProductEnhanced[];
   const memoProducts = filterProducts(products, currentFilter)
 
-  return (<section className="bg-teal-500 h-screen p-6 ">
+  return (<section className="bg-teal-500 h-100 p-6 ">
     {memoProducts.map((p: Product) => <ProductLine product={p} />)}
   </section>)
 }
