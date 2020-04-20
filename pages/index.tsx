@@ -3,6 +3,7 @@ import Head from 'next/head'
 import useSWR from 'swr'
 import type { Product } from '../types'
 import axios from 'axios'
+import mem from 'mem'
 
 const ProductLine = ({ product }: { product: Product }) => (
   <div>
@@ -23,9 +24,10 @@ interface ProductEnhanced extends Product {
 
 const fetchProducts = (url: string) => axios.get(url).then(res => res.data.map((p: Product) => ({ ...p, json: JSON.stringify(p) })))
 
-const filterProducts = (products: ProductEnhanced[], filter: string) => {
+const filterProducts = mem((products: ProductEnhanced[], filter: string) => {
   return products.filter(p => p.json.includes(filter))
-}
+}, {cacheKey: JSON.stringify})
+
 const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
   const { data, error } = useSWR('/api/products', fetchProducts)
 
