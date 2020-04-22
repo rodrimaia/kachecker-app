@@ -8,11 +8,12 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 
 const ProductLine = ({ product }: { product: Product }) => (
   <div>
-    <div className="flex bg-white rounded-lg p-6 mb-5">
+    <div className="flex  flex-wrap bg-white rounded-lg p-6 mb-5">
       <div className="rounded-full text-center text-5xl font-light"> {product.desconto}%
             </div>
+
+      <img className="h-24 pl-4" src={product.imagem} />
       <div className="flex-grow p-4 flex">
-        <img className="h-24" src={product.imagem} />
         <div className="pl-2 text-lg">
         <h2 className="text-teal-500 font-bold">{product.produto}</h2>
         <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta}</span>
