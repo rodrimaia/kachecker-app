@@ -5,6 +5,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import type { Product } from '../types'
 
+const buildProductAddress = (prd: Product) => `https://www.kabum.com.br/cgi-local/site/produtos/descricao_ofertas.cgi?codigo=${prd.codigo}`;
+
 const ProductLine = ({ product }: { product: Product }) => (
   <div>
     <div className="flex  flex-wrap bg-white rounded-lg p-6 mb-5">
@@ -13,13 +15,14 @@ const ProductLine = ({ product }: { product: Product }) => (
       <img className="h-24 px-4" src={product.imagem} />
       <div className="flex-grow py-4 flex">
         <div className="text-lg">
-          <h2 className="text-teal-500 font-bold">{product.produto}</h2>
+          <h2 className="text-teal-500 font-bold">
+            <a href={buildProductAddress(product)}>{product.produto}</a>
+          </h2>
           <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta}</span>
         </div>
       </div>
     </div>
   </div>
-
 )
 
 interface ProductEnhanced extends Product {
@@ -29,7 +32,7 @@ interface ProductEnhanced extends Product {
 const fetchProducts = (url: string) => axios.get(url).then(res => {
   const enhanced: ProductEnhanced[] = res.data.map((p: Product) => ({ ...p, json: JSON.stringify(p) } as ProductEnhanced));
   // @ts-ignore
-  return [...enhanced].sort((a, b) => (a.desconto < b.desconto ? -1 : (a.desconto > b.desconto ? 1 : 0))).reverse()
+  return [...enhanced].sort((a: Product, b: Product) => b.desconto - a.desconto)
 })
 
 const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
@@ -60,7 +63,6 @@ const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
     </InfiniteScroll>
   </section>)
 }
-
 
 export default function Home() {
   const [filter, setFilter] = useState("")
