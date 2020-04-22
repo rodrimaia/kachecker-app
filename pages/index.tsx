@@ -1,10 +1,9 @@
-import React, { useState } from "react"
+import axios from 'axios'
 import Head from 'next/head'
+import React, { useState } from "react"
+import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import type { Product } from '../types'
-import axios from 'axios'
-import mem from 'mem'
-import InfiniteScroll from 'react-infinite-scroll-component'
 
 const ProductLine = ({ product }: { product: Product }) => (
   <div>
@@ -14,8 +13,8 @@ const ProductLine = ({ product }: { product: Product }) => (
       <img className="h-24 px-4" src={product.imagem} />
       <div className="flex-grow py-4 flex">
         <div className="text-lg">
-        <h2 className="text-teal-500 font-bold">{product.produto}</h2>
-        <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta}</span>
+          <h2 className="text-teal-500 font-bold">{product.produto}</h2>
+          <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta}</span>
         </div>
       </div>
     </div>
@@ -28,14 +27,14 @@ interface ProductEnhanced extends Product {
 }
 
 const fetchProducts = (url: string) => axios.get(url).then(res => {
-    const enhanced: ProductEnhanced[] = res.data.map((p: Product) => ({ ...p, json: JSON.stringify(p) } as ProductEnhanced));
-    // @ts-ignore
-    return [...enhanced].sort((a,b) => ( a.desconto < b.desconto ? -1 : ( a.desconto > b.desconto ? 1 : 0))).reverse()
-} )
+  const enhanced: ProductEnhanced[] = res.data.map((p: Product) => ({ ...p, json: JSON.stringify(p) } as ProductEnhanced));
+  // @ts-ignore
+  return [...enhanced].sort((a, b) => (a.desconto < b.desconto ? -1 : (a.desconto > b.desconto ? 1 : 0))).reverse()
+})
 
 const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
   const { data, error } = useSWR('/api/products', fetchProducts)
-  const [ step , setStep ] = useState(30)
+  const [step, setStep] = useState(30)
 
   if (error) return <div> Whoops </div>;
   if (!data) return <div>loading...</div>
@@ -47,18 +46,18 @@ const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
   const fetchData = () => { setStep(step + 30) }
 
   return (<section className="bg-teal-500 h-100 p-6 ">
-      <InfiniteScroll
-          dataLength={productsPage.length}
-          next={fetchData}
-          hasMore={productsPage.length < memoProducts.length }
-          loader={<h4>Loading...</h4>}
-          endMessage={
-              <p style={{textAlign: 'center'}}>
-                  <b>Yay! You have seen it all</b>
-              </p>
-          }>
-    {productsPage.map((p: Product) => <ProductLine key={p.produto} product={p} />)}
-      </InfiniteScroll>
+    <InfiniteScroll
+      dataLength={productsPage.length}
+      next={fetchData}
+      hasMore={productsPage.length < memoProducts.length}
+      loader={<h4>Loading...</h4>}
+      endMessage={
+        <p style={{ textAlign: 'center' }}>
+          <b>Yay! You have seen it all</b>
+        </p>
+      }>
+      {productsPage.map((p: Product) => <ProductLine key={p.produto} product={p} />)}
+    </InfiniteScroll>
   </section>)
 }
 
