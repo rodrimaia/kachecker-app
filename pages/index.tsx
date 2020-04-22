@@ -4,14 +4,19 @@ import useSWR from 'swr'
 import type { Product } from '../types'
 import axios from 'axios'
 import mem from 'mem'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 const ProductLine = ({ product }: { product: Product }) => (
   <div>
     <div className="flex bg-white rounded-lg p-6 mb-5">
       <div className="rounded-full text-center text-5xl font-light"> {product.desconto}%
             </div>
-      <div className="flex-grow p-4">
-        <h2 className="text-lg text-teal-500 font-bold">{product.produto}</h2>
+      <div className="flex-grow p-4 flex">
+        <img className="h-24" src={product.imagem} />
+        <div className="pl-2 text-lg">
+        <h2 className="text-teal-500 font-bold">{product.produto}</h2>
+        <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -25,24 +30,35 @@ interface ProductEnhanced extends Product {
 const fetchProducts = (url: string) => axios.get(url).then(res => {
     const enhanced: ProductEnhanced[] = res.data.map((p: Product) => ({ ...p, json: JSON.stringify(p) } as ProductEnhanced));
     // @ts-ignore
-    return [...enhanced].sort((a,b) => ( a.desconto < b.desconto ))
+    return [...enhanced].sort((a,b) => ( a.desconto < b.desconto ? -1 : ( a.desconto > b.desconto ? 1 : 0))).reverse()
 } )
-
-const filterProducts = mem((products: ProductEnhanced[], filter: string) => {
-  return products.filter(p => p.json.includes(filter))
-}, {cacheKey: JSON.stringify})
 
 const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
   const { data, error } = useSWR('/api/products', fetchProducts)
+  const [ step , setStep ] = useState(30)
 
   if (error) return <div> Whoops </div>;
   if (!data) return <div>loading...</div>
 
   const products = data as ProductEnhanced[];
-  const memoProducts = filterProducts(products, currentFilter)
+  const memoProducts = products.filter(p => p.json.includes(currentFilter))
+  const productsPage = memoProducts.slice(0, step)
+
+  const fetchData = () => { setStep(step + 30) }
 
   return (<section className="bg-teal-500 h-100 p-6 ">
-    {memoProducts.map((p: Product) => <ProductLine product={p} />)}
+      <InfiniteScroll
+          dataLength={productsPage.length}
+          next={fetchData}
+          hasMore={productsPage.length < memoProducts.length }
+          loader={<h4>Loading...</h4>}
+          endMessage={
+              <p style={{textAlign: 'center'}}>
+                  <b>Yay! You have seen it all</b>
+              </p>
+          }>
+    {productsPage.map((p: Product) => <ProductLine key={p.produto} product={p} />)}
+      </InfiniteScroll>
   </section>)
 }
 
@@ -66,6 +82,15 @@ export default function Home() {
       </main>
 
       <style jsx global>{`
+          html,
+                         body,
+                         body > div:first-child,
+main,
+                         div#__next,
+                         div#__next > div,
+                         div#__next > div > div {
+                             height: 100%;
+                         }
       `}</style>
     </div>
   )
