@@ -5,13 +5,17 @@ import { NowRequest, NowResponse } from '@now/node'
 const kachecker = new Kachecker(KacheckerDefaultConfigs)
 
 export default async (req: NowRequest, res: NowResponse) => {
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate')
 
   if(process.env.NODE_ENV === "development") {
     res.status(200).send(sampleProducts)
   } else {
-    const productsNew = await kachecker.fetchProducts();
-    res.status(200).send(productsNew)
+    const productsResponse = await kachecker.fetchProducts();
+    if (productsResponse.length > 0) {
+      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate')
+    } else {
+      res.setHeader('Cache-Control', 'no-cache')
+    }
+    res.status(200).send(productsResponse)
   }
 
  }
