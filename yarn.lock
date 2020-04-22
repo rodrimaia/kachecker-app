@@ -934,10 +934,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@juliano.ladeira/kachecker@^1.0.1":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@juliano.ladeira/kachecker/-/kachecker-1.1.0.tgz#136dd6e4b9ae1f11bd806d1257628b74fb1b2f02"
-  integrity sha512-tmze3w39l82O/RWixP9JqSXhQTYnSQqAX6qLOZ7UK731+eMIW9nAR9XJ5JAsXE4D+ZOtVExuiEsQm0gSrbhKdg==
+"@juliano.ladeira/kachecker@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@juliano.ladeira/kachecker/-/kachecker-1.2.0.tgz#f310bcc058a8a0bfeb807a543c459ab23c336a18"
+  integrity sha512-Iv2T3nGlURVQBHSJ4bYBZ14OKeM7rdR0nEekTQgw4m0NphLtgqFABXJBId1GkBEsf0ItRI9t1mkYZRWUsybYXw==
   dependencies:
     axios "^0.19.2"
 
