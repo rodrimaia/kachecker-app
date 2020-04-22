@@ -11,10 +11,9 @@ const ProductLine = ({ product }: { product: Product }) => (
     <div className="flex  flex-wrap bg-white rounded-lg p-6 mb-5">
       <div className="rounded-full text-center text-5xl font-light"> {product.desconto}%
             </div>
-
-      <img className="h-24 pl-4" src={product.imagem} />
-      <div className="flex-grow p-4 flex">
-        <div className="pl-2 text-lg">
+      <img className="h-24 px-4" src={product.imagem} />
+      <div className="flex-grow py-4 flex">
+        <div className="text-lg">
         <h2 className="text-teal-500 font-bold">{product.produto}</h2>
         <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta}</span>
         </div>
@@ -76,8 +75,8 @@ export default function Home() {
 
       <main>
         <nav className="flex items-center bg-teal-500 p-6">
-          <span className="font-semibold text-xl tracking-tight lg:w-1/4 xl:w-1/5 pl-6 pr-6 lg:pr-8">Kacheck</span>
-          <input className="transition-colors duration-100 ease-in-out focus:outline-0 border border-transparent focus:bg-white focus:border-gray-300 placeholder-gray-600 rounded-lg bg-gray-200 py-2 pr-4 pl-10 w-full appearance-none leading-normal ds-input" type="text" placeholder="Search" aria-expanded="false" aria-label="search input" dir="auto" value={filter} onChange={event => setFilter(event.target.value)} />
+          <span className="font-semibold text-xl tracking-tight pr-6">Kacheck</span>
+          <input className="transition-colors duration-100 ease-in-out focus:outline-0 border border-transparent focus:bg-white focus:border-gray-300 placeholder-gray-600 rounded-lg bg-gray-200 py-2 pr-4 pl-2 lg:pl-10 w-full appearance-none leading-normal ds-input" type="text" placeholder="Search" aria-expanded="false" aria-label="search input" dir="auto" value={filter} onChange={event => setFilter(event.target.value)} />
         </nav>
         <ProductsList currentFilter={filter} />
       </main>
