@@ -86,6 +86,7 @@ const Home = () => {
       <Head>
         <title>Kacheck</title>
         <link rel="icon" href="/favicon.ico" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-60989222-7"></script>
       </Head>
 
       <main>
