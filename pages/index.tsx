@@ -1,4 +1,6 @@
 import axios from 'axios'
+import Router from "next/router";
+import withGA from "next-ga";
 import Head from 'next/head'
 import React, { useState } from "react"
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -76,7 +78,7 @@ const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
   </section>)
 }
 
-export default function Home() {
+const Home = () => {
   const [filter, setFilter] = useState("")
 
   return (
@@ -108,3 +110,6 @@ main,
     </div>
   )
 }
+
+// pass your GA code as first argument
+export default withGA("UA-60989222-7", Router)(Home);

@@ -11,7 +11,7 @@ export default async (req: NowRequest, res: NowResponse) => {
   } else {
     const productsResponse = await kachecker.fetchProducts();
     if (productsResponse.length > 0) {
-      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate')
+      res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate')
     } else {
       res.setHeader('Cache-Control', 'no-cache')
     }
