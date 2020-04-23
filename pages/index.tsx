@@ -7,7 +7,7 @@ import type { Product } from '../types'
 
 const buildProductAddress = (prd: Product) => `https://www.kabum.com.br/cgi-local/site/produtos/descricao_ofertas.cgi?codigo=${prd.codigo}`;
 
-const ProductLine = ({ product }: { product: Product }) => (
+const ProductLine = ({ product }: { product: ProductEnhanced }) => (
   <div>
     <div className="flex  flex-wrap bg-white rounded-lg p-6 mb-5">
       <div className="rounded-full text-center text-5xl font-light"> {product.desconto}%
@@ -18,7 +18,7 @@ const ProductLine = ({ product }: { product: Product }) => (
           <h2 className="text-teal-500 font-bold">
             <a href={buildProductAddress(product)}>{product.produto}</a>
           </h2>
-          <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta}</span>
+          <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta_str}</span>
         </div>
       </div>
     </div>
@@ -26,11 +26,23 @@ const ProductLine = ({ product }: { product: Product }) => (
 )
 
 interface ProductEnhanced extends Product {
-  json: string
+  json: string,
+  vlr_oferta_str?: string
 }
 
 const fetchProducts = (url: string) => axios.get(url).then(res => {
-  const enhanced: ProductEnhanced[] = res.data.map((p: Product) => ({ ...p, json: JSON.stringify(p) } as ProductEnhanced));
+  const enhanced: ProductEnhanced[] = res.data
+    .map(
+      (p: Product) => (
+        {
+          ...p,
+          json: JSON.stringify(p),
+          vlr_oferta_str: p.vlr_oferta && p.vlr_oferta.toFixed(2),
+          vlr_normal: p.vlr_normal && Number(p.vlr_normal).toFixed(2)
+        } as ProductEnhanced)
+    );
+
+
   // @ts-ignore
   return [...enhanced].sort((a: Product, b: Product) => b.desconto - a.desconto)
 })
@@ -59,7 +71,7 @@ const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
           <b>Yay! You have seen it all</b>
         </p>
       }>
-      {productsPage.map((p: Product) => <ProductLine key={p.produto} product={p} />)}
+      {productsPage.map((p: ProductEnhanced) => <ProductLine key={p.produto} product={p} />)}
     </InfiniteScroll>
   </section>)
 }
