@@ -7,18 +7,23 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
 import type { Product } from '../types'
 
-const buildProductAddress = (prd: Product) => `https://www.kabum.com.br/cgi-local/site/produtos/descricao_ofertas.cgi?codigo=${prd.codigo}`;
+const buildKabumLink = (prd: Product) => `https://www.kabum.com.br/cgi-local/site/produtos/descricao_ofertas.cgi?codigo=${prd.codigo}`;
+const buildZoomSearchLink = (product: Product) => `https://www.zoom.com.br/search?q=${product.produto.split(' ').join('+')}`;
 
 const ProductLine = ({ product }: { product: ProductEnhanced }) => (
   <div>
-    <div className="flex  flex-wrap bg-white rounded-lg p-6 mb-5">
-      <div className="rounded-full text-center text-5xl font-light"> {product.desconto}%
-            </div>
+    <div className="flex flex-row flex-wrap bg-white rounded-lg p-6 mb-5">
+      <div style={{ display: "inline-flex", flexShrink: 0, flexGrow: "initial", flexDirection: "column", justifyContent: "flex-start" }}>
+        <div className="rounded-full text-5xl font-light"> {product.desconto}%</div>
+        <button onClick={() => window.location.href = buildZoomSearchLink(product)}>
+          <img src="../zoom.png"></img>
+        </button>
+      </div>
       <img className="h-24 px-4" src={product.imagem} />
       <div className="flex-grow py-4 flex">
         <div className="text-lg">
           <h2 className="text-teal-500 font-bold">
-            <a href={buildProductAddress(product)}>{product.produto}</a>
+            <a href={buildKabumLink(product)}>{product.produto}</a>
           </h2>
           <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta_str}</span>
         </div>
@@ -99,15 +104,15 @@ const Home = () => {
 
       <style jsx global>{`
           html,
-                         body,
-                         body > div:first-child,
-main,
-                         div#__next,
-                         div#__next > div,
-                         div#__next > div > div {
-                             height: 100%;
-                         }
-      `}</style>
+          body,
+          body > div: first - child,
+            main,
+            div#__next,
+              div#__next > div,
+                div#__next > div > div {
+          height: 100 %;
+        }
+`}</style>
     </div>
   )
 }
