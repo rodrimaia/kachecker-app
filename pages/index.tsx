@@ -5,27 +5,26 @@ import Head from 'next/head'
 import React, { useState } from "react"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWR from 'swr'
-import type { Product } from '../types'
+import { Product } from '@juliano.ladeira/kachecker';
 
-const buildKabumLink = (prd: Product) => `https://www.kabum.com.br/cgi-local/site/produtos/descricao_ofertas.cgi?codigo=${prd.codigo}`;
-const buildZoomSearchLink = (product: Product) => `https://www.zoom.com.br/search?q=${product.produto.split(' ').join('+')}`;
+const buildZoomSearchLink = (product: Product) => `https://www.zoom.com.br/search?q=${product.name.split(' ').join('+')}`;
 
 const ProductLine = ({ product }: { product: ProductEnhanced }) => (
   <div>
     <div className="flex flex-row flex-wrap bg-white rounded-lg p-6 mb-5">
       <div style={{ display: "inline-flex", flexShrink: 0, flexGrow: "initial", flexDirection: "column", justifyContent: "flex-start" }}>
-        <div className="rounded-full text-5xl font-light"> {product.desconto}%</div>
+        <div className="rounded-full text-5xl font-light"> {product.discount}%</div>
         <button onClick={() => window.location.href = buildZoomSearchLink(product)}>
           <img src="../zoom.png"></img>
         </button>
       </div>
-      <img className="h-24 px-4" src={product.imagem} />
+      <img className="h-24 px-4" src={product.imageUrl} />
       <div className="flex-grow py-4 flex">
         <div className="text-lg">
           <h2 className="text-teal-500 font-bold">
-            <a href={buildKabumLink(product)}>{product.produto}</a>
+            <a href={product.storeLink}>{product.name}</a>
           </h2>
-          <span className="line-through">{product.vlr_normal}</span> -> <span className="font-bold">{product.vlr_oferta_str}</span>
+          <span className="line-through">{product.originalPrice}</span> -> <span className="font-bold">{product.discountedPrice}</span>
         </div>
       </div>
     </div>
@@ -44,14 +43,15 @@ const fetchProducts = (url: string) => axios.get(url).then(res => {
         {
           ...p,
           json: JSON.stringify(p),
-          vlr_oferta_str: p.vlr_oferta && p.vlr_oferta.toFixed(2),
-          vlr_normal: p.vlr_normal && Number(p.vlr_normal).toFixed(2)
+          discount: Math.floor(p.discount),
+          discountedPrice: Number(p.discountedPrice.toFixed(2)),
+          originalPrice: Number(p.originalPrice.toFixed(2))
         } as ProductEnhanced)
     );
 
 
   // @ts-ignore
-  return [...enhanced].sort((a: Product, b: Product) => b.desconto - a.desconto)
+  return [...enhanced].sort((a: Product, b: Product) => b.discount - a.discount)
 })
 
 const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
@@ -78,7 +78,7 @@ const ProductsList = ({ currentFilter }: { currentFilter: string }) => {
           <b>Yay! You have seen it all</b>
         </p>
       }>
-      {productsPage.map((p: ProductEnhanced) => <ProductLine key={p.produto} product={p} />)}
+      {productsPage.map((p: ProductEnhanced) => <ProductLine key={p.name} product={p} />)}
     </InfiniteScroll>
   </section>)
 }
