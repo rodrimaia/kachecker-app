@@ -1,23 +1,22 @@
 import Kachecker from "@juliano.ladeira/kachecker"
 import { NowRequest, NowResponse } from '@now/node'
 
-
 const kachecker = new Kachecker();
 kachecker.registerAll();
+
 export default async (req: NowRequest, res: NowResponse) => {
 
-  // if (process.env.NODE_ENV === "development") {
-  if (process.env.NODE_ENV === "test") {
-    res.status(200).send(sampleProducts)
-  } else {
-    const productsResponse = await kachecker.fetchProducts();
-    if (productsResponse.length > 0) {
-      res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate')
+    // if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === "test") {
+        res.status(200).send(sampleProducts)
     } else {
-      res.setHeader('Cache-Control', 'no-cache')
+
+        const productsResponse = await kachecker.fetchProducts();
+        const cacheControl = productsResponse.length > 0 ? 's-maxage=600, stale-while-revalidate' : 'no-cache';
+
+        res.setHeader('Cache-Control', cacheControl)
+        res.status(200).send(productsResponse)
     }
-    res.status(200).send(productsResponse)
-  }
 
 }
 
