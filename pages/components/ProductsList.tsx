@@ -2,6 +2,7 @@ import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ProductLine } from "./ProductLine";
 import { Product } from "@juliano.ladeira/kachecker";
+import ReactLoading from 'react-loading';
 import axios from 'axios'
 import useSWR from 'swr'
 
@@ -33,8 +34,14 @@ export const ProductsList = ({ filter }: { filter: string }) => {
     const { data, error } = useSWR('/api/products', fetchProducts)
     const [step, setStep] = useState(30)
 
+    const loadingStyle = {
+        paddingTop: "80px",
+        margin: "0 auto",
+        width: "60px"
+    }
+
     if (error) return <div> Whoops </div>;
-    if (!data) return <div> loading... </div>
+    if (!data) return (<div style={loadingStyle}><ReactLoading className="flex content-center" type={'bars'} color={'black'} height={'100%'} width={'100%'} /></div>)
 
     const products = data as ProductEnhanced[];
     const memoProducts = products.filter(p => p.json.includes(filter))
