@@ -28,12 +28,13 @@ const fetchProducts = (url: string) => axios.get(url).then(res => {
     return [...enhanced].sort((a: Product, b: Product) => b.discount - a.discount)
 })
 
+
 export const ProductsList = ({ filter }: { filter: string }) => {
     const { data, error } = useSWR('/api/products', fetchProducts)
     const [step, setStep] = useState(30)
 
     if (error) return <div> Whoops </div>;
-    if (!data) return <div>loading...</div>
+    if (!data) return <div> loading... </div>
 
     const products = data as ProductEnhanced[];
     const memoProducts = products.filter(p => p.json.includes(filter))
