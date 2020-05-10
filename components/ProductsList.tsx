@@ -1,6 +1,6 @@
 import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { ProductLine } from "./ProductLine";
+import ProductLine from "./ProductLine";
 import { Product } from "@juliano.ladeira/kachecker";
 import ReactLoading from 'react-loading';
 import axios from 'axios'
@@ -30,7 +30,7 @@ const fetchProducts = (url: string) => axios.get(url).then(res => {
 })
 
 
-export const ProductsList = ({ filter }: { filter: string }) => {
+const ProductsList = ({ filter }: { filter: string }) => {
     const { data, error } = useSWR('/api/products', fetchProducts)
     const [step, setStep] = useState(30)
 
@@ -64,3 +64,5 @@ export const ProductsList = ({ filter }: { filter: string }) => {
         </InfiniteScroll>
     </section>)
 }
+
+export default ProductsList;

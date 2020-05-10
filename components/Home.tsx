@@ -1,8 +1,8 @@
 import { useState } from "react"
-import { ProductsList } from "./ProductsList"
+import ProductsList from "./ProductsList"
 import Head from "next/head"
 
-export const Home = () => {
+const Home = () => {
 
     const [filter, setFilter] = useState("");
 
@@ -50,3 +50,5 @@ export const Home = () => {
         </div>
     )
 }
+
+export default Home;

@@ -4,7 +4,7 @@ export type ProductLineProps = {
     product: Product
 }
 
-export const ProductLine = ({ product }: ProductLineProps) => {
+const ProductLine = ({ product }: ProductLineProps) => {
 
     const buildZoomSearchLink = () => `https://www.zoom.com.br/search?q=${product.name.split(' ').join('+')}`;
 
@@ -30,3 +30,5 @@ export const ProductLine = ({ product }: ProductLineProps) => {
         </div>
     );
 }
+
+export default ProductLine;
