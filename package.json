@@ -8,7 +8,7 @@
         "start": "next start"
     },
     "dependencies": {
-        "@juliano.ladeira/kachecker": "^2.1.1",
+        "@juliano.ladeira/kachecker": "file:../../JulianoPeresLadeira/kachecker",
         "@now/node": "^1.5.1",
         "autoprefixer": "^9.7.6",
         "axios": "^0.19.2",
